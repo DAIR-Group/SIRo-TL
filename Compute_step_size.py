@@ -13,8 +13,8 @@ def compute_quotient(numerator, denominator):
 	return quotient
 
 
-def compute_interval(Q_z, f_z, S_Az, S_Azc, h_z, u0_z, u1_z, Z, t_z, v_Az, Az, Azc):
-	N, p = Z.shape
+def compute_step_size(Q_z, f_z, S_Az, S_Azc, h_z, u0_z, u1_z, X, t_z, v_Az, Az, Azc):
+	N, p = X.shape
 
 	u0_A = u0_z[Az]
 	u1_A = u1_z[Az]

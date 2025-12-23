@@ -119,8 +119,8 @@ def compute_V_t_i(t_idx, i_idx, list_zk, xi, f_matrix, g_matrix):
 
 def Outlier_detection_intervals(list_zk, list_f_mat, list_g_mat, xi, Outlier_obs):
 	T = len(list_zk) - 1
-
 	n = len(list_f_mat[0])
+	
 	all_ct = []
 
 	t = 0

@@ -18,40 +18,40 @@ def generate_data(p, nS, nT, K):
 	Beta_S, beta_target = generate_coef(p, K)
 	Beta_all = np.column_stack([Beta_S[:, k] for k in range(K)] + [beta_target])
 
-	ZS_list, YS_list = [], []
+	XS_list, YS_list = [], []
 	N_vec = [nS] * K + [nT]
 
 	for k in range(K + 1):
-		Zk_raw = np.random.normal(0, 1, size = (N_vec[k], p))
+		Xk_raw = np.random.normal(0, 1, size = (N_vec[k], p))
 		intercept_col = np.ones((N_vec[k], 1))
-		Zk = np.hstack([intercept_col, Zk_raw])
+		Xk = np.hstack([intercept_col, Xk_raw])
 
-		true_Yk = Zk @ Beta_all[:, k]
-		
+		true_Yk = Xk @ Beta_all[:, k]
+
 		noise = np.random.normal(0, 1, size = N_vec[k])
 
 		Yk = true_Yk + noise
 
-		ZS_list.append(Zk)
+		XS_list.append(Xk)
 		YS_list.append(Yk)
 
-	Z0 = ZS_list[-1]
+	X0 = XS_list[-1]
 	Y0 = YS_list[-1]
-	ZS_list = ZS_list[:-1]
+	XS_list = XS_list[:-1]
 	YS_list = YS_list[:-1]
 
 	SigmaS_list = [np.identity(nS) for _ in range(K)]
 	Sigma0 = np.identity(nT)
 
-	Z = np.vstack(ZS_list + [Z0])
+	X = np.vstack(XS_list + [X0])
 	Y = np.concatenate(YS_list + [Y0])
 	Sigma = block_diag(*SigmaS_list, Sigma0)
 
-	return Z, Z0, Y, Y0, Sigma
+	return X, X0, Y, Y0, Sigma
 
 
-def Construct_matrix(Z, Y, gamma):
-	N, p = Z.shape
+def Construct_matrix(X, Y, gamma):
+	N, p = X.shape
 
 	P = np.zeros((2 * p + 2 * N, 2 * p + 2 * N))
 	P[2 * p : 2 * p + N, 2 * p : 2 * p + N] = np.identity(N)
@@ -70,13 +70,13 @@ def Construct_matrix(Z, Y, gamma):
 	q_1[p : 2 * p] = np.ones(p)
 
 	S = np.zeros((5 * N + 2 * p, 2 * p + 2 * N))
-	S[: N, : p] = Z
-	S[: N, p : 2 * p] = -Z
+	S[: N, : p] = X
+	S[: N, p : 2 * p] = -X
 	S[: N, 2 * p : 2 * p + N] = - np.identity(N)
 	S[: N, 2 * p + N : 2 * p + 2 * N] = - np.identity(N)
 
-	S[N : 2 * N, : p] = -Z
-	S[N : 2 * N, p : 2 * p] = Z
+	S[N : 2 * N, : p] = -X
+	S[N : 2 * N, p : 2 * p] = X
 	S[N : 2 * N, 2 * p : 2 * p + N] = - np.identity(N)
 	S[N : 2 * N, 2 * p + N : 2 * p + 2 * N] = - np.identity(N)
 
