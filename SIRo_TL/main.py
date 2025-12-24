@@ -6,13 +6,13 @@ warnings.filterwarnings("ignore")
 
 
 def run():
-	nS = 50
-	nT = 40
-	p = 150
+	nS = 150
+	nT = 50
+	p = 400
 
 	gamma = 1.0
 	alpha = 0.5
-	xi_threshold = 1.0
+	xi_threshold = 2.5
 	threshold = 20
 
 	K = 1
@@ -23,8 +23,8 @@ def run():
 	N, p = X.shape
 	nT = X0.shape[0]
 
-	lambda_w = np.sqrt(np.log(p) / N) * 9.0
-	lambda_d = np.sqrt(np.log(p) / nT) * 4.5
+	lambda_w = np.sqrt(np.log(p) / N) * 2.0
+	lambda_d = np.sqrt(np.log(p) / nT) * 1.0
 
 	P_w, K_w, q0_w, q1_w, S_w, h_w, u0_w, u1_w = Gen_data.Construct_matrix(X, Y, gamma)
 
