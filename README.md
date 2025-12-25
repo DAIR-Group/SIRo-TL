@@ -1,8 +1,10 @@
-# SIRo-TL: Statistical Inference for High-Dimensional Robust Regression and Outlier Detection after Transfer Learning
+# SIRo-TL: Statistical Inference for High-Dimensional Robust Regression after Transfer Learning
 
 ![License](https://img.shields.io/github/license/DAIR-Group/SIRo-TL)
 
-SIRo-TL is ...
+SIRo-TL is a Python package that implements a framework for conducting valid statistical inference in High-Dimensional Robust Regression under Transfer Learning (TL) scenarios. The main idea is to synergize the inherent robustness of Huber regression with the rigorous guarantees of the selective inference framework to handle datasets plagued by outliers and heavy-tailed noise. Our proposed method leverages auxiliary source domain information to stabilize estimation and provides valid $p$-values for the selected features. This ensures that the False Positive Rate (FPR) is kept under control while maximizing the True Positive Rate (TPR), offering a resilient and interpretable solution for complex real-world environments.
+## The SIRo-TL framework
+
 
 ## Requirements
 This package has the following requirements:
