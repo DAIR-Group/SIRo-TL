@@ -13,41 +13,49 @@ def generate_coef(p, K, noise = 0.01):
 	return Beta_S, beta_target
 
 
-def generate_data(p, nS, nT, K):
-
-	Beta_S, beta_target = generate_coef(p, K)
-	Beta_all = np.column_stack([Beta_S[:, k] for k in range(K)] + [beta_target])
-
-	XS_list, YS_list = [], []
-	N_vec = [nS] * K + [nT]
-
-	for k in range(K + 1):
-		Xk_raw = np.random.normal(0, 1, size = (N_vec[k], p))
-		intercept_col = np.ones((N_vec[k], 1))
-		Xk = np.hstack([intercept_col, Xk_raw])
-
-		true_Yk = Xk @ Beta_all[:, k]
-
-		noise = np.random.normal(0, 1, size = N_vec[k])
-
-		Yk = true_Yk + noise
-
-		XS_list.append(Xk)
-		YS_list.append(Yk)
-
-	X0 = XS_list[-1]
-	Y0 = YS_list[-1]
-	XS_list = XS_list[:-1]
-	YS_list = YS_list[:-1]
-
-	SigmaS_list = [np.identity(nS) for _ in range(K)]
-	Sigma0 = np.identity(nT)
-
-	X = np.vstack(XS_list + [X0])
-	Y = np.concatenate(YS_list + [Y0])
-	Sigma = block_diag(*SigmaS_list, Sigma0)
-
-	return X, X0, Y, Y0, Sigma
+def generate_data(p, nS, nT, K, num_outliers, delta):
+    
+    Beta_S, beta_target = generate_coef(p, K)
+    Beta_all = np.column_stack([Beta_S[:, k] for k in range(K)] + [beta_target])
+    
+    XS_list, YS_list = [], []
+    N_vec = [nS] * K + [nT]
+    real_outlier_list = []
+    for k in range(K + 1):
+        Xk_raw = np.random.normal(0, 1, size = (N_vec[k], p))
+        intercept_col = np.ones((N_vec[k], 1))
+        Xk = np.hstack([intercept_col, Xk_raw])
+    
+        true_Yk = Xk @ Beta_all[:, k]
+    
+        noise = np.random.normal(0, 1, size = N_vec[k])
+        
+        Yk = true_Yk + noise
+        
+        if k == K and num_outliers > 0:
+            n_samples = N_vec[k]
+            num_real_outlier = min(num_outliers, n_samples)
+            
+            for i in range(0, num_real_outlier, 1):
+                real_outlier_list.append(i)
+            Yk[real_outlier_list] += delta
+    
+        XS_list.append(Xk)
+        YS_list.append(Yk)
+    
+    X0 = XS_list[-1]
+    Y0 = YS_list[-1]
+    XS_list = XS_list[:-1]
+    YS_list = YS_list[:-1]
+    
+    SigmaS_list = [np.identity(nS) for _ in range(K)]
+    Sigma0 = np.identity(nT)
+    
+    X = np.vstack(XS_list + [X0])
+    Y = np.concatenate(YS_list + [Y0])
+    Sigma = block_diag(*SigmaS_list, Sigma0)
+    
+    return X, X0, Y, Y0, Sigma
 
 
 def Construct_matrix(X, Y, gamma):
