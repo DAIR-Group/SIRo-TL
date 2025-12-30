@@ -18,7 +18,7 @@ def run():
 	K = 1
 	N = nS * K + nT
 
-	X, X0, Y, Y0, Sigma = Gen_data.generate_data(p, nS, nT, K)
+	X, X0, Y, Y0, Sigma = Gen_data.generate_data(p, nS, nT, K, num_outliers = 0, delta = 0)
 	
 	N, p = X.shape
 	nT = X0.shape[0]
